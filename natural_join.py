@@ -1,4 +1,5 @@
 import csv
+import re
 
 def natural_join(infile1, infile2, outfile):
   with open(infile1, encoding='utf-8') as f:
@@ -37,21 +38,22 @@ def natural_join(infile1, infile2, outfile):
       header.append(x)
 
   print(header)
-  with open(outfile, 'w', encoding='utf-8') as f:
+  with open(outfile, 'w', encoding='utf-8',newline='') as f:
     writer = csv.writer(f, delimiter=',')
     writer.writerow(header)
-    # for key1 in d1:
-    #   for key2 in d2:
-    #     if key1 == key2:
-    #       out = []
-    #       out[0] = int(key1)
-    #       for i in out:
-    #         print(out[i])
+    for key1 in d1:
+      for key2 in d2:
+        if key1 == key2:
+          output = []
+          output.append(key1)
+          writer.writerow(output)
+          writer.writerow(d1[key1] + d2[key2])
 
-  for key1 in d1:
-    for key2 in d2:
-      if key1 == key2:
-        print('{},{}'.format(key1, d1[key1] + d2[key2]))
+         # writer.writerow('{},{}'.format(123, d1[key1] + d2[key2]))
+  # for key1 in d1:
+  #   for key2 in d2:
+  #     if key1 == key2:
+  #       print('{},{}'.format(key1, d1[key1] + d2[key2]))
 
 
 
