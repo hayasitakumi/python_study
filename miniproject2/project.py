@@ -2,13 +2,13 @@ import time
 import requests
 from bs4 import BeautifulSoup
 import pprint
+import json
 
 def get_keywords(url):
-  time.sleep(0.1)
+  time.sleep(0.5)
   r = requests.get(url)
   soup = BeautifulSoup(r.content, 'lxml')
   keywords_csv = soup.find('meta', attrs={'name': 'keywords'}).get('content')
-#  print(keywords_csv.split(','))
   return keywords_csv.split(',')
 
 def get_dept():
@@ -16,12 +16,9 @@ def get_dept():
   r = requests.get(url)
   soup = BeautifulSoup(r.content, 'lxml')
   sections = soup.find_all('p',class_='title')
-  
-  # for section in sections:
-  #   print(section.text)
 
   table = soup.find_all('div',class_='homeLaboSection')
-#  pprint.pprint(table)
+
   subjects = table[0].find_all('div',class_='laboList')
   
   link_list = []
@@ -30,7 +27,7 @@ def get_dept():
 
   lab_list = []
   url_list = []
-  #pprint.pprint(links)
+
   for links in link_list:
     labs = []
     url_labs = []
@@ -42,22 +39,10 @@ def get_dept():
     url_list.append(url_labs)  
     lab_list.append(labs)
 
-  # for section in sections:
-  #   print(section.text)
-#  pprint.pprint(url_list)
-#  pprint.pprint(lab_list)
-
-  # for url_lab in url_labs:
-  #   print(url_lab)
-
   return sections,lab_list,url_list
 
 def scrape_labs():
   sections,lab_list,url_list = get_dept()
-  # for section in sections:
-  #   print(section.text)
-  #pprint.pprint(url_list)
-  #pprint.pprint(lab_list)
   
   lab_in_depts = []
   for i,urls in enumerate(url_list):
@@ -70,7 +55,7 @@ def scrape_labs():
       lab_in_dept.append(dict_keyword)
 
     lab_in_depts.append(lab_in_dept)
-  print(lab_in_depts)
+
   lists = []
   for i,section in enumerate(sections):
     dict_dept = {}
@@ -78,35 +63,24 @@ def scrape_labs():
     dict_dept['labs'] = lab_in_depts[i]
     lists.append(dict_dept)
 
+  lab_csv = []
   for list in lists:
-    print(list)
+    lab_csv.append(list)
 
-  #pprint.pprint(list)
-#   lists = []
+  filename = 'labs.json'
+  with open(filename, mode='w', encoding='utf-8') as f:
+    json.dump(lab_csv, f, ensure_ascii=False)
 
-#   keywords = []
-  
-#   for url in urls:
-#     keywords.append(get_keywords(url))
-  
-#   dict_labs = {}
-#   dict['keywords'] = 
+def search_labs(keyword):
+  with open('labs.json', mode='r', encoding='utf-8') as f:
+    depts = json.load(f)
+    list = []
+    for dept in depts:
+      for labs in dept['labs']:
+        tuple_list = []
+        if keyword in labs['keywords']:
+          tuple_list.append(dept['dept'])
+          tuple_list.append(labs['lab'])
+          list.append(tuple(tuple_list))
 
-#   for section in sections:
-#     dict = {}
-#     dict = {'dept': section.text,'labs'}
-#     lists.append(dict)
-    
-  # for list in lists:
-  #   print(list)
-  
-  # for keyword in keywords:
-  #   print(keyword)
-
-# def serch_labs():
-
-  
-if __name__ == "__main__":
-#  get_keywords('https://kitnet.jp/laboratories/labo0001/index.html')
-#  get_dept()
-   scrape_labs()
+  return list
