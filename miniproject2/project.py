@@ -5,7 +5,7 @@ import pprint
 import json
 
 def get_keywords(url):
-  time.sleep(0.5)
+  #time.sleep(0.5)
   r = requests.get(url)
   soup = BeautifulSoup(r.content, 'lxml')
   keywords_csv = soup.find('meta', attrs={'name': 'keywords'}).get('content')
@@ -20,17 +20,18 @@ def get_dept():
   table = soup.find_all('div',class_='homeLaboSection')
 
   subjects = table[0].find_all('div',class_='laboList')
-  
+
   link_list = []
   for subject in subjects:
     link_list.append(subject.find_all('a'))
+    print(subject)
 
   lab_list = []
   url_list = []
 
   for links in link_list:
     labs = []
-    url_labs = []
+    url_labs = [] 
     for link in links:
       if link.has_attr('href') and link['href']:
         url_labs.append(url + link['href'])
@@ -84,3 +85,7 @@ def search_labs(keyword):
           list.append(tuple(tuple_list))
 
   return list
+
+
+if __name__ == "__main__":
+  scrape_labs()
