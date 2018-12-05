@@ -1,0 +1,14 @@
+def add((s0, n0, a0, b0),(s1, n1, a1, b1)):
+    print'‘æˆêˆø”'
+    print s0
+    print n0
+    print a0
+    print b0
+    print '‘æ“ñˆø”'
+    print s1
+    print n0
+    print a0
+    print b0
+
+if __name__ == '__main__':   
+    add((1, 1, 1, 2), (1, 2, 2, 3))
